@@ -13,6 +13,7 @@ const checkRoleAuth = (roles) => async (req, res, next) => {
       if (error) {
         response.status(400).send(`Erro`)
       } else {
+        console.log(roles)
         if ([].concat(roles).includes(results.rows[0].rol_descripcion)) {
           next();
         } else {
