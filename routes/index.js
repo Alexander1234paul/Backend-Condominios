@@ -129,6 +129,24 @@ const {
     updateUsuarioExterno
 } = require("../controllers/usuario_externo");
 
+//Controlador Vehículo
+const {
+    getAllVehiculo,
+    getVehiculoById,
+    createVehiculo,
+    updateVehiculo,
+    deleteVehiculo
+} = require("../controllers/vehiculo");
+
+//Controlador Reporte
+const {
+    getAllReporte,
+    getReporteById,
+    createReporte,
+    updateReporte,
+    deleteReporte
+} = require("../controllers/reporte");
+
 // Tipo Servicio CRUD
 router.post('/tipo_servicio', createTipoServicio)
 router.get('/tipo_servicio/:tser_id', getTipoServicioById)
@@ -220,3 +238,17 @@ router.get('/usuarioExterno/:per_id', getUsuarioExterno)
 router.get('/usuarioExterno', getAllUsuarioExterno)
 router.delete('/usuarioExterno/:use_id', deleteUsuarioExterno)
 router.put('/usuarioExterno/:per_id', updateUsuarioExterno)
+
+//Vehiculo CRUD
+router.get('/vehiculos', getAllVehiculo)
+router.get('/vehiculo/:veh_placa', getVehiculoById)
+router.post('/vehiculo', createVehiculo)
+router.put("/vehiculo/:veh_placa", updateVehiculo)
+router.delete('/vehiculo/:veh_placa', deleteVehiculo)
+
+//Reporte CRUD
+router.get('/reportes', getAllReporte)
+router.get('/reporte/:rep_id', getReporteById)
+router.post('/reporte', createReporte)
+router.put("/reporte/:rep_id", updateReporte)
+router.delete('/reporte/:rep_id', deleteReporte)
