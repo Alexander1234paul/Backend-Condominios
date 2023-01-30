@@ -70,7 +70,7 @@ const getResidente = (request, response) => {
 
 
 const getAllResidente = (request, response) => {
-    db.query('select p.per_id, p.per_nombres,p.per_apellidos, rr.rol_descripcion, r.res_correo, r.res_telefono, r.res_clave from residente r inner join persona  p on p.per_id=r.per_id inner join rol_residente rr on r.rol_id=rr.rol_id', (error, results) => {
+    db.query('select p.per_id, p.per_nombres,p.per_apellidos, rr.rol_descripcion, r.res_correo, r.res_telefono, r.res_clave, res_usuario from residente r inner join persona  p on p.per_id=r.per_id inner join rol_residente rr on r.rol_id=rr.rol_id', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
