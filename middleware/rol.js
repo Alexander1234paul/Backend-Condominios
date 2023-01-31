@@ -4,6 +4,7 @@ const { db } = require("../Conexiones/slq")
 
 const checkRoleAuth = (roles) => async (req, res, next) => {
   try {
+    console.log(roles)
 
     const token = req.headers.authorization.split(" ").pop();
     const tokenData = await verifyToken(token);
