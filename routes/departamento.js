@@ -5,7 +5,7 @@ const { createDepartamento, getAllDepartamento, getDepartamentoById, updateDepar
 
 router.post('/departamentos/',createDepartamento)
 router.get('/departamentos',getAllDepartamento)
-router.get('/departamentos/dep_id/:dep_id',getDepartamentoById)
+router.get('/departamentos/:dep_id',getDepartamentoById)
 router.put("/departamentos/:dep_id",updateDepartamento)
 router.delete('/departamentos/:dep_id',deleteDepartamento)
 

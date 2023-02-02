@@ -5,7 +5,7 @@ const {createBien, getAllBien, getBienById, updateBien, deleteBien } = require('
 
 router.post('/bienes/',createBien)
 router.get('/bienes',getAllBien)
-router.get('/bienes/bien_id/:bien_id',getBienById)
+router.get('/bienes/:bien_id',getBienById)
 router.put("/bienes/:bien_id",updateBien)
 router.delete('/bienes/:bien_id',deleteBien)
 
