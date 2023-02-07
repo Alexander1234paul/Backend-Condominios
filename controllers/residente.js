@@ -83,6 +83,7 @@ const deleteResidente = (request, response) => {
     const res_id = request.params.res_id;
 
     db.query('delete from seg_sis_residente where res_id=$1', [res_id], (error, results) => {
+        
         if (error)
             throw error
         response.status(200).send(`deleted id is ${res_id}`)

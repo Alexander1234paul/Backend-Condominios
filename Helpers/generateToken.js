@@ -8,7 +8,7 @@ const tokenSign = async (id, rol) => {
         },
         "123456",
         {
-            expiresIn: "2h",
+            expiresIn: "24d",
         }
     );
 };
