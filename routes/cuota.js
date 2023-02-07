@@ -9,7 +9,7 @@ const {
     deleteCuota
 } = require("../controllers/cuota");
 
-router.get('/cuota', getAllCuota)
+router.get('/cuotas', getAllCuota)
 router.get('/cuota/:cuo_id', getByCuota)
 router.post('/cuota', createCuota)
 router.put("/cuota/:cuo_id", updateCuota)

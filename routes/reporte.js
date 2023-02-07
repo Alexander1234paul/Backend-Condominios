@@ -9,7 +9,7 @@ const {
     deleteReporte
 } = require("../controllers/reporte");
 
-router.get('/reporte', getAllReporte)
+router.get('/reportes', getAllReporte)
 router.get('/reporte/:rep_id', getReporteById)
 router.post('/reporte', createReporte)
 router.put("/reporte/:rep_id", updateReporte)
