@@ -4,7 +4,7 @@ const { db } = require("../Conexiones/slq")
 const createBien= (request, response) => {
     const {bien_descripcion,bien_costo} = request.body
 
-    db.query(`INSERT INTO bien (bien_descripcion,bien_costo) 
+    db.query(`INSERT INTO gest_adm_bien (bien_descripcion,bien_costo) 
     VALUES ($1,$2)`, [bien_descripcion,bien_costo], (error, results) => {
         if (error) {
             throw error
@@ -15,7 +15,7 @@ const createBien= (request, response) => {
 
 const getAllBien = (request, response) => {
 
-    db.query('SELECT * FROM bien ', (error, results) => {
+    db.query('SELECT * FROM gest_adm_bien', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
@@ -25,7 +25,7 @@ const getAllBien = (request, response) => {
 const getBienById = (request, response) => {
     const bien_id = request.params.bien_id;
     console.log('id is ' + bien_id)
-    db.query('SELECT * FROM bien WHERE bien_id = $1', [bien_id], (error, results) => {
+    db.query('SELECT * FROM gest_adm_bien WHERE bien_id = $1', [bien_id], (error, results) => {
         if (error) {
             throw error
         }
@@ -38,7 +38,7 @@ const updateBien = (request, response) => {
     const {bien_descripcion,bien_costo} = request.body
     console.log('id is ' + bien_id)
 
-    db.query(`UPDATE bien SET bien_descripcion=$1, bien_costo=$2 WHERE bien_id=$3`, [bien_descripcion,bien_costo,bien_id], (error, results) => {
+    db.query(`UPDATE gest_adm_bien SET bien_descripcion=$1, bien_costo=$2 WHERE bien_id=$3`, [bien_descripcion,bien_costo,bien_id], (error, results) => {
         if (error) {
             throw error
         }
@@ -51,7 +51,7 @@ const deleteBien = (request, response) => {
 
     const bien_id = request.params.bien_id;
     console.log('id is ' + bien_id)
-    db.query('DELETE from bien WHERE bien_id=$1', [bien_id], (error, results) => {
+    db.query('DELETE from gest_adm_bien WHERE bien_id=$1', [bien_id], (error, results) => {
         if (error)
             throw error
         response.status(200).send(`Deleted id is ${bien_id}`)
