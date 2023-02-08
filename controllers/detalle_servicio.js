@@ -28,7 +28,7 @@ const getDetalleServicioById = (request, response) => {
 
 const getAllDetalleServicios = (request, response) => {
 
-    db.query('select * from res_detalle_servicio ', (error, results) => {
+    db.query('SELECT dser_id, dser_evidencia, ser_descripcion FROM res_detalle_servicio ds INNER JOIN res_servicio s on s.ser_id = ds.ser_id', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
