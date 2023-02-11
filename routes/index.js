@@ -2,7 +2,20 @@ const { Router } = require("express");
 const router = Router()
 const checkAuth = require("../middleware/auth")
 const checkRoleAuth = require("../middleware/rol")
+const Img = require("../models/img");
+const upload = require("../middleware/upload");
+//Controlador img
+const {
+    getImg,
+    createImg,
+    deleteImg,
+    getImgById,
+    updateImg
+} = require("../controllers/img");
 
+const {
+    uploadToCloudinary,
+} = require("../services/cloudinary");
 
 // Controladores Tipo Servicio
 const {
@@ -253,3 +266,10 @@ router.get('/reporte/:rep_id', getReporteById)
 router.post('/reporte', createReporte)
 router.put("/reporte/:rep_id", updateReporte)
 router.delete('/reporte/:rep_id', deleteReporte)
+
+//Reporte IMG
+router.get('/image', getImg)
+router.get("/image/:id", getImgById)
+router.post("/image", upload.single("userImage"), createImg)
+router.put("/image/:id", upload.single("userImage"), updateImg)
+router.delete("/image/:id", deleteImg)

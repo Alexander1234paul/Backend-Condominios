@@ -3,7 +3,7 @@ const express = require("express")
 const cors = require("cors")
 const app = express()
 const dbConnectnoSql = require("./Conexiones/noSql")
-const dbConnectSql = require("./Conexiones/slq")
+require("./Conexiones/slq")
 
 //MIDDLEWARES
 app.use(cors())
