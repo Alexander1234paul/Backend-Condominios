@@ -15,7 +15,7 @@ const createVehiculo= (request, response) => {
 
 const getAllVehiculo = (request, response) => {
 
-    db.query('SELECT * FROM seg_cond_vehiculo ', (error, results) => {
+    db.query('SELECT v.*, CONCAT (ssp.per_nombres,ssp.per_apellidos) as resi from seg_cond_vehiculo v inner join seg_sis_residente ssr on v.res_id=ssr.res_id inner join seg_sis_persona ssp on ssr.per_id=ssp.per_id', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
