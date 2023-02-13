@@ -12,6 +12,7 @@ app.use(cors({ origin: true, credentials: true  }));
 // app.use("/api", require("./routes"))
 
 app.use(require('./routes/auth'));
+app.use(require('./routes/alquiler'));
 app.use(require('./routes/residente'));
 app.use(require('./routes/index'));
 app.use(require('./routes/rolResidente'));

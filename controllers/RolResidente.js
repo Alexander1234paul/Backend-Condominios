@@ -37,6 +37,19 @@ const getAllRolResidentes = (request, response) => {
 
     })
 }
+
+const getAllRolResidentesA = (request, response) => {
+
+    db.query('select rr.rol_id, rr.rol_descripcion from seg_sis_rol_residente rr where  rr.rol_id!=5  and rr.rol_id!=6', (error, results) => {
+        if (error) {
+            response.status(400).send(`{}`)
+        } else {
+            response.status(200).json(results.rows)
+        }
+
+
+    })
+}
 const deleteRolResidente = (request, response) => {
     const rol_id = request.params.rol_id;
     db.query('delete from seg_sis_rol_residente where rol_id=$1', [rol_id], (error, results) => {
@@ -71,6 +84,7 @@ module.exports = {
     getRolResidenteById,
     getAllRolResidentes,
     deleteRolResidente,
-    updateRolResidente
+    updateRolResidente,
+    getAllRolResidentesA
 
 }
