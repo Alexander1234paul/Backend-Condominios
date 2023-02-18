@@ -24,22 +24,22 @@ const getByMulta = (request, response) => {
 }
 
 const createMulta = (request, response) => {
-    const { mul_id, mon_id, dcuo_id, mul_estado, mul_fecha } = request.body
+    const {mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total } = request.body
 
-    db.query('INSERT INTO cont_multa (mul_id, mon_id, dcuo_id, mul_estado, mul_fecha) VALUES ($1, $2, $3, $4, $5)', [mul_id, mon_id, dcuo_id, mul_estado, mul_fecha], (error, results) => {
+    db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($1, $2, $3, $4, $5, $6)', [mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total], (error, results) => {
         if (error) {
             throw error
         }
-        response.status(201).send(`Multa added with ID: ${mul_id}`)
+        response.status(201).send(`Multa added with ID: ${res_id}`)
     })
 }
 
 const updateMulta = (request, response) => {
     const mul_id = request.params.mul_id;
-    const { mon_id, dcuo_id, mul_estado, mul_fecha } = request.body
+    const { mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total } = request.body
     console.log('id' + mul_id)
 
-    db.query('update cont_multa set mon_id=$2, dcuo_id=$3, mul_estado=$4, mul_fecha=$5 where mul_id=$1', [mon_id, dcuo_id, mul_estado, mul_fecha, mul_id], (error, results) => {
+    db.query('update cont_multa set mon_id=$2, res_id=$3, mul_estado=$4, mul_fecha=$5, mul_descripcion=$6, mul_total=$7 where mul_id=$1', [mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total, mul_id], (error, results) => {
         if (error) {
             throw error
         }
@@ -51,12 +51,12 @@ const deleteMulta = (request, response) => {
 
     const mul_id = request.params.mul_id;
 
-    console.log('id' + mul_id)
+    //console.log('id' + mul_id)
 
     db.query('delete from cont_multa where mul_id=$1', [mul_id], (error, results) => {
         if (error)
             throw error
-        response.status(200).send(`Delete id ${mul_id}`)
+        response.status(200).send(`Delete id is ${mul_id}`)
     })
 }
 
