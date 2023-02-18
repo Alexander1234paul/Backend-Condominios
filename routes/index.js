@@ -160,6 +160,12 @@ const {
     deleteReporte
 } = require("../controllers/reporte");
 
+//Controlador Pagos
+const {
+    createCuota,
+    getAllCuota
+} = require("../controllers/pago");
+
 // Tipo Servicio CRUD
 router.post('/tipo_servicio', createTipoServicio)
 router.get('/tipo_servicio/:tser_id', getTipoServicioById)
@@ -273,3 +279,7 @@ router.get("/image/:id", getImgById)
 router.post("/image", upload.single("userImage"), createImg)
 router.put("/image/:id", upload.single("userImage"), updateImg)
 router.delete("/image/:id", deleteImg)
+
+//cuota
+router.post('/cuota', createCuota)
+router.get('/cuota', getAllCuota)
