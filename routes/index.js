@@ -62,14 +62,6 @@ const {
     deleteBien
 } = require('../controllers/bien')
 
-// Controlador Cuotas
-// const {
-//     getAllCuota,
-//     getByCuota,
-//     createCuota,
-//     updateCuota,
-//     deleteCuota
-// } = require("../controllers/cuota");
 
 // Controlador Departamento
 const {
@@ -162,7 +154,9 @@ const {
 
 //Controlador Pagos
 const {
-    createCuota
+    createCuota,
+    getAllCuota,
+    getAllAlicuota
 } = require("../controllers/pago");
 
 // Tipo Servicio CRUD
@@ -201,12 +195,6 @@ router.get('/bienes/bien_id/:bien_id', getBienById)
 router.put("/bienes/:bien_id", updateBien)
 router.delete('/bienes/:bien_id', deleteBien)
 
-// Cuota CRUD
-// router.get('/cuota', getAllCuota)
-// router.get('/cuota/:cuo_id', getByCuota)
-// router.post('/cuota', createCuota)
-// router.put("/cuota/:cuo_id", updateCuota)
-// router.delete('/cuota/:cuo_id', deleteCuota)
 
 
 // Departamento CRUD
@@ -279,5 +267,7 @@ router.post("/image", upload.single("userImage"), createImg)
 router.put("/image/:id", upload.single("userImage"), updateImg)
 router.delete("/image/:id", deleteImg)
 
-//cuota
+//Pago CRUD
 router.post('/cuota', createCuota)
+router.get('/alicuota', getAllAlicuota)
+router.get('/cuota', getAllCuota)
