@@ -7,7 +7,7 @@ const {
     createCuota,
     updateCuota,
     deleteCuota
-} = require("../controllers/cuota");
+} = require("../controllers/pago");
 
 router.get('/cuotas', getAllCuota)
 router.get('/cuota/:cuo_id', getByCuota)

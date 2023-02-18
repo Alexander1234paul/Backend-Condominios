@@ -4,7 +4,7 @@ const { db } = require("../Conexiones/slq")
 const createPersona = (request, response) => {
     const { per_id, per_nombres, per_apellidos } = request.body
 
-    db.query('INSERT INTO persona (per_id, per_nombres, per_apellidos) VALUES ($1, $2, $3)', [per_id, per_nombres, per_apellidos], (error, results) => {
+    db.query('INSERT INTO seg_sis_persona (per_id, per_nombres, per_apellidos) VALUES ($1, $2, $3)', [per_id, per_nombres, per_apellidos], (error, results) => {
         if (error) {
             throw error
         }
@@ -28,7 +28,7 @@ const getPersona = (request, response) => {
 
 const getAllPersona = (request, response) => {
 
-    db.query('select * from persona ', (error, results) => {
+    db.query('select * from seg_sis_persona ', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
@@ -42,7 +42,7 @@ const deletePersona = (request, response) => {
 
     console.log('id is ' + per_id)
 
-    db.query('delete from persona where per_id=$1', [per_id], (error, results) => {
+    db.query('delete from seg_sis_persona where per_id=$1', [per_id], (error, results) => {
         if (error)
             throw error
         response.status(200).send(`deleted id is ${per_id}`)
