@@ -3,7 +3,7 @@ const { db } = require("../Conexiones/slq")
 
 const getAllMulta = (request, response) => {
 
-    db.query('select * from cont_multa order by mul_id', (error, results) => {
+    db.query('SELECT (pe.per_apellidos, pe.per_nombres) as residente, ml.mul_descripcion, mo.mon_precio, ml.mul_fecha, ml.mul_estado  FROM cont_multa ml, gest_adm_monto mo, seg_sis_residente r, seg_sis_persona pe where ml.mon_id = mo.mon_id and ml.mul_estado = false and ml.res_id = r.res_id and r.per_id = pe.per_id order by ml.mul_id', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
@@ -47,6 +47,19 @@ const updateMulta = (request, response) => {
     })
 }
 
+const pagarMulta = (request, response) => {
+    const mul_id = request.params.mul_id;
+    const { mul_estado, mul_total } = request.body
+    console.log('id' + mul_id)
+
+    db.query('update cont_multa set mul_estado=true, mul_total=0 where mul_id=$1', [mul_estado, mul_total], (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).send(`Multa modified with ${mul_id}`)
+    })
+}
+
 const deleteMulta = (request, response) => {
 
     const mul_id = request.params.mul_id;
@@ -65,6 +78,7 @@ module.exports = {
     getByMulta,
     createMulta,
     updateMulta,
-    deleteMulta
+    deleteMulta,
+    pagarMulta
 
 }

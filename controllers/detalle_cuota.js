@@ -3,7 +3,7 @@ const { db } = require("../Conexiones/slq")
 
 const getAllDCuota = (request, response) => {
 
-    db.query('select * from detalle_cuota order by dcuo_id', (error, results) => {
+    db.query('SELECT (pe.per_apellidos, pe.per_nombres) as residente, al.ali_descripcion, al.ali_costo, d.dpag_fecha, d.dpag_estado, total  FROM cont_detalle_pago d, gest_adm_alicuota al, seg_sis_residente r, seg_sis_persona pe where al.ali_id <> 1 and d.dpag_estado = false and d.ali_id = al.ali_id and d.res_id = r.res_id and r.per_id = pe.per_id order by d.dpag_id', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
