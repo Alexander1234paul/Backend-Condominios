@@ -155,8 +155,17 @@ const {
 //Controlador Pagos
 const {
     createCuota,
+    getAllAlicuota,
     getAllCuota,
-    getAllAlicuota
+    getAllDetallePago,
+    createDetallePago,
+    getPagoByaliID,
+    updatePago,
+    updateAlicuota,
+    deleteAliCuota,
+    deletePago,
+    createPagoByID,
+    updateEstado
 } = require("../controllers/pago");
 
 // Tipo Servicio CRUD
@@ -267,7 +276,19 @@ router.post("/image", upload.single("userImage"), createImg)
 router.put("/image/:id", upload.single("userImage"), updateImg)
 router.delete("/image/:id", deleteImg)
 
-//Pago CRUD
+//Pagos APIS
+//cuotas
 router.post('/cuota', createCuota)
-router.get('/alicuota', getAllAlicuota)
 router.get('/cuota', getAllCuota)
+router.get('/alicuota', getAllAlicuota)
+router.put('/alicuota/:ali_id', updateAlicuota)
+router.delete('/alicuota/:ali_id', deleteAliCuota)
+    // detalle pago
+router.get('/detalle_pago', getAllDetallePago)
+router.post('/detalle_pago', createDetallePago)
+router.put('/detalle_pago/:dpag_id/:res_correo', updateEstado)
+    // pagos
+router.get('/pagos/:ali_id', getPagoByaliID)
+router.put('/pago/:pag_id', updatePago)
+router.delete('/pago/:pag_id/:ali_id', deletePago)
+router.post('/pago_id/:ali_id', createPagoByID)
