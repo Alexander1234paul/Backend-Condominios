@@ -81,7 +81,61 @@ const sendEmail = async (req, res) => {
     res.status(200).send(`{"status":"Error", "resp":"Error"}`)
 }
 
+
+
+
+const sendEmailtoAll = async (req, res) => {
+
+    const { Datos } = req.body
+
+
+
+
+    const config = {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: 'paul1234alexander@gmail.com', // generated ethereal user
+            pass: 'jpizrpzbkmlbxwiz' // generated ethereal password
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    }
+
+    db.query('SELECT * FROM public.seg_sis_residente where  rol_id!=2 and rol_id!=5', async (error, results) => {
+        if (error) {
+            res.send(`{"status":"Error", "resp":"${error}"}`)
+        } else {
+           
+
+            for (var i = 0; i < results.rowCount; i++) {
+                console.log(i)
+                console.log(results.rows[i].res_correo);
+                const mensaje = {
+                    from: 'paul1234alexander@gmail.com', // sender address
+                    to: ''+results.rows[i].res_correo, // list of receivers
+                    subject: 'REUNION', // Subject line
+                    text: Datos, // plain text body
+                    // html: '<p>HTML content</p>' // html body
+                };
+                const transporter = nodemailer.createTransport(config);
+                transporter.sendMail(mensaje, (error, info) => {
+                    if (error) {
+                        res.send(`{"status":"Error", "resp":"${error}"}`)
+                    } else {
+                       
+                    }
+                });
+            }
+            res.send(`{"status":"Ok", "resp":"Correo enviado a ${i} condóminos"}`)
+        }
+    })
+
+}
+
 module.exports = {
-    loginCtrl, sendEmail
+    loginCtrl, sendEmail, sendEmailtoAll
 
 }
