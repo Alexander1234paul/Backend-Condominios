@@ -193,6 +193,15 @@ const {
     updateEstado
 } = require("../controllers/pago");
 
+//Controlador Vehículo
+const {
+    getAllMonto,
+    getByMonto,
+    createMonto,
+    updateMonto,
+    deleteMonto
+} = require("../controllers/monto");
+
 // Tipo Servicio CRUD
 router.post('/tipo_servicio', createTipoServicio)
 router.get('/tipo_servicio/:tser_id', getTipoServicioById)
@@ -339,6 +348,7 @@ router.get('/cuota', getAllCuota)
 router.get('/alicuota', getAllAlicuota)
 router.put('/alicuota/:ali_id', updateAlicuota)
 router.delete('/alicuota/:ali_id', deleteAliCuota)
+
     // detalle pago
 router.get('/detalle_pago', getAllDetallePago)
 router.post('/detalle_pago', createDetallePago)
@@ -354,3 +364,10 @@ router.get('/totalmulta/:token', getTotalMulta)
 router.get('/detmulta/:token', getDetByIdMulta)
 router.get('/getUser/:token', getRolUser)
 router.post('/alqv', createVerificarAlquiler)
+
+//Montos
+router.post('/monto', createMonto)
+router.get('/monto', getAllMonto)
+router.get('/monto/:mon_id', getByMonto)
+router.put('/monto/:mon_id', updateMonto)
+router.delete('/monto/:ali_id', deleteMonto)

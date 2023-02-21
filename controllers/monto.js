@@ -3,12 +3,12 @@ const { db } = require("../Conexiones/slq")
 
 const getAllMonto = (request, response) => {
 
-    db.query(`select * from gest_adm_monto`, (error, results) => {
+    db.query('SELECT * FROM gest_adm_monto order by mon_id', (error, results) => {
         if (error) {
             //throw error
-            response.status(201).sjson(results.rows)
+            response.status(400).send(`{}`)
         } else {
-            //response.status(201).json(results.rows)
+            response.status(201).json(results.rows)
         }
     })
 }
