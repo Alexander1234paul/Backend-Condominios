@@ -3,7 +3,7 @@ const { db } = require("../Conexiones/slq")
 
 const getAllMulta = (request, response) => {
 
-    db.query('SELECT (pe.per_apellidos, pe.per_nombres) as residente, ml.mul_descripcion, mo.mon_precio, ml.mul_fecha, ml.mul_estado  FROM cont_multa ml, gest_adm_monto mo, seg_sis_residente r, seg_sis_persona pe where ml.mon_id = mo.mon_id and ml.mul_estado = false and ml.res_id = r.res_id and r.per_id = pe.per_id order by ml.mul_id', (error, results) => {
+    db.query('SELECT concat(pe.per_apellidos, pe.per_nombres) as residente, ml.mul_descripcion, ml.mul_total, ml.mul_fecha, ml.mul_estado  FROM cont_multa ml, gest_adm_monto mo, seg_sis_residente r, seg_sis_persona pe where ml.mon_id = mo.mon_id and ml.mul_estado = false and ml.res_id = r.res_id and r.per_id = pe.per_id order by ml.mul_id', (error, results) => {
         if (error) {
             //throw error
             response.status(400).send(`{}`)
@@ -29,9 +29,9 @@ const getByMulta = (request, response) => {
 }
 
 const createMulta = (request, response) => {
-    const {mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total } = request.body
+    const {mon_id, res_id, mul_descripcion, mul_total } = request.body
 
-    db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($1, $2, $3, $4, $5, $6)', [mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total], (error, results) => {
+    db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($1, $2, false, current_date, $3, $4)', [mon_id, res_id, mul_descripcion, mul_total], (error, results) => {
         if (error) {
             //throw error
             response.status(400).send(`{}`)
