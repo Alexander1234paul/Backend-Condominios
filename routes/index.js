@@ -47,18 +47,22 @@ const {
 // Controlador Alquiler
 const {
     createAlquiler,
+    getTotalMulta,
     getAllAlquiler,
     getAlquilerById,
     updateAlquiler,
     deleteAlquiler,
     getPagoAlicuota,
+    getDetByIdMulta,
     getPagoReservaciones,
     getDetalleAlicuotaByID,
     getResServicio,
     getSumaResServicio,
     createAlquilerUsuarios,
     createVerificarAlquilerUsuarios,
-    getAllAlquileru
+    getAllAlquileru,
+    getRolUser,
+    createVerificarAlquiler
 } = require('../controllers/alquiler')
 
 // Controlador Bien
@@ -344,3 +348,9 @@ router.get('/pagos/:ali_id', getPagoByaliID)
 router.put('/pago/:pag_id', updatePago)
 router.delete('/pago/:pag_id/:ali_id', deletePago)
 router.post('/pago_id/:ali_id', createPagoByID)
+
+// Nuevas
+router.get('/totalmulta/:token', getTotalMulta)
+router.get('/detmulta/:token', getDetByIdMulta)
+router.get('/getUser/:token', getRolUser)
+router.post('/alqv', createVerificarAlquiler)
