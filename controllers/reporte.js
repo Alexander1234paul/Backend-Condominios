@@ -59,12 +59,58 @@ const deleteReporte = (request, response) => {
     })
 }
 
+const getReporteCuotas = (request, response) => {
+    const dpag_fecha = request.params.dpag_fecha;
+    console.log('id is ' + dpag_fecha)
+    db.query('select sum(cdp.total) as cuotas from cont_detalle_pago cdp where extract (year from cdp.dpag_fecha) = $1', [dpag_fecha], (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
+
+const getReporteAlquileres = (request, response) => {
+    const alq_fecha = request.params.alq_fecha;
+    console.log('id is ' + alq_fecha)
+    db.query('select sum(ra.alq_total) as alquileres from res_alquiler ra where extract (year from ra.alq_fecha) = $1', [alq_fecha], (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
+
+const getReporteMultas = (request, response) => {
+    const mul_fecha = request.params.mul_fecha;
+    console.log('id is ' + mul_fecha)
+    db.query('select sum(cm.mul_total) as multas from cont_multa cm where extract (year from cm.mul_fecha) = $1', [mul_fecha], (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
+
+const getReporteGastos = (request, response) => {
+    const ser_fecha = request.params.ser_fecha;
+    console.log('id is ' + ser_fecha)
+    db.query('select sum(rs.ser_total) as gastos from res_servicio rs where extract (year from rs.ser_fecha) = $1', [ser_fecha], (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
 
 module.exports = {
     createReporte,
     getAllReporte,
     getReporteById,
     updateReporte,
-    deleteReporte
-
+    deleteReporte,
+    getReporteCuotas,
+    getReporteAlquileres,
+    getReporteMultas,
+    getReporteGastos
 }
