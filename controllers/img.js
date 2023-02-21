@@ -11,25 +11,40 @@ const getImg = async(req, res) => {
     res.json(img)
 }
 
-//Crear img Image
 const createImg = async(req, res) => {
-        try {
-            // Upload image to cloudinary
-            const data = await uploadToCloudinary(req.file.path, "condominio");
-            // Create new user
-            let img = new Img({
-                name: req.body.name,
-                imageUrl: data.url,
-                publicId: data.public_id,
-            });
-            // Save user
-            await img.save();
-            res.json(img);
-        } catch (err) {
-            console.log(err);
-        };
+    try {
+        // Upload image to cloudinary
+        const data = await uploadToCloudinary(req.file.path, "condominio");
+        const imageUrl = data.url;
+
+        // Create new image object
+        let img = new Img({
+            name: req.body.name,
+            imageUrl: imageUrl,
+            publicId: data.public_id,
+        });
+
+        // Save image to MongoDB
+        await img.save();
+
+        // Insert image URL and ser_id to PostgreSQL
+        const query = 'INSERT INTO res_detalle_servicio (dser_evidencia, ser_id) VALUES ($1, $2)';
+        const values = [imageUrl, req.body.ser_id];
+        await db.query(query, values);
+
+        // Insert MongoDB _id to PostgreSQL
+        const query2 = 'INSERT INTO res_detalle_pago (id_mongo) VALUES ($1)';
+        const values2 = [img._id];
+        await db.query(query2, values2);
+        response.send(`{"status":"Ok", "resp":"Tipo Servicio added with ID: ${img}"}`)
+    } catch (err) {
+        console.log(err);
+        response.send(`{"status":"Error", "resp":${err}}`)
     }
-    // Delete img Image
+};
+
+
+// Delete img Image
 const deleteImg = async(req, res) => {
     try {
         // Find user by id

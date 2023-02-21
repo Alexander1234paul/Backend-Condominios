@@ -8,7 +8,7 @@ const createTipoServicio = (request, response) => {
         if (error) {
             throw error
         }
-        response.status(201).send(`Tipo Servicio added with ID: ${tser_descripcion}`)
+        response.send(`{"status":"Ok", "resp":"Tipo Servicio added with ID: ${tser_descripcion}"}`)
     })
 }
 
@@ -45,23 +45,26 @@ const deleteTipoServicio = (request, response) => {
     db.query('delete from gest_adm_tipo_servicio where tser_id=$1', [tser_id], (error, results) => {
         if (error)
             throw error
-        response.status(200).send(`deleted id is ${tser_id}`)
+
+        response.send(`{"status":"Ok", "resp":"deleted id is ${tser_id}"}`)
     })
 }
 
 
 const updateTipoServicio = (request, response) => {
     const tser_id = request.params.tser_id;
-    const { tser_descripcion } = request.body
-    console.log('id is ' + tser_id)
+    const { tser_descripcion, status } = request.body;
+    console.log('id is ' + tser_id);
 
     db.query('update gest_adm_tipo_servicio set tser_descripcion=$1 where tser_id=$2', [tser_descripcion, tser_id], (error, results) => {
         if (error) {
-            throw error
+            response.send(`{"status":"Error", "resp":${error}}`)
+        } else {
+            response.send(`{"status":"Ok", "resp":"Asignación correcta"}`)
         }
-        response.status(200).send(`Tipo Servicio modified with ${tser_id}`)
-    })
-}
+    });
+};
+
 
 
 module.exports = {

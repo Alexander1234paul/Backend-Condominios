@@ -8,7 +8,7 @@ const createServicio = (request, response) => {
         if (error) {
             throw error
         }
-        response.status(201).send(`Servicio added with: ${ser_fecha, ser_descripcion, ser_total, tser_id }`)
+        response.send(`{"status":"Ok", "resp":"Tipo Servicio added with ID: ${ser_descripcion}"}`)
     })
 }
 
@@ -45,7 +45,7 @@ const deleteServicio = (request, response) => {
     db.query('delete from res_servicio where ser_id=$1', [ser_id], (error, results) => {
         if (error)
             throw error
-        response.status(200).send(`deleted id is ${ser_id}`)
+        response.send(`{"status":"Ok", "resp":"deleted id is ${ser_id}"}`)
     })
 }
 
@@ -57,9 +57,10 @@ const updateServicio = (request, response) => {
 
     db.query('update res_servicio set ser_fecha=$1, ser_descripcion=$2, ser_total=$3, tser_id=$4 where ser_id=$5', [ser_fecha, ser_descripcion, ser_total, tser_id, ser_id], (error, results) => {
         if (error) {
-            throw error
+            response.send(`{"status":"Error", "resp":${error}}`)
+        } else {
+            response.send(`{"status":"Ok", "resp":"Asignación correcta"}`)
         }
-        response.status(200).send(`Tipo Servicio modified with ${ser_id}`)
     })
 }
 
