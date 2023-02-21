@@ -28,16 +28,29 @@ const getByMulta = (request, response) => {
     })
 }
 
-const createMulta = (request, response) => {
-    const { res_id, mul_descripcion, mul_total } = request.body
-    console.log( res_id, mul_descripcion, mul_total)
+const getResidenteM = (request, response) => {
 
-    db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES (1, $1, false, current_date, $2, $3)', [ res_id, mul_descripcion, mul_total], (error, results) => {
+
+    db.query("SELECT (p.per_nombres || ' ' || p.per_apellidos) as residente, r.res_id FROM seg_sis_residente r inner join seg_sis_persona p on p.per_id = r.per_id", (error, results) => {
         if (error) {
-            //throw error
             response.status(400).send(`{}`)
         } else {
-            response.status(201).send(`{insertado correctamente}`)
+            response.status(201).json(results.rows)
+        }
+    })
+}
+
+const createMulta = (request, response) => {
+    const { res_id, mul_descripcion, mul_total } = request.body
+    console.log(res_id, mul_descripcion, mul_total)
+
+    db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES (1, $1, false, current_date, $2, $3)', [res_id, mul_descripcion, mul_total], (error, results) => {
+        if (error) {
+
+            response.send(`{"status":"Error", "resp":"${error}"}`)
+        } else {
+            response.send(`{"status":"OK", "resp":"Multa registrada exitosamente"}`)
+
         }
     })
 }
@@ -92,6 +105,7 @@ module.exports = {
     createMulta,
     updateMulta,
     deleteMulta,
-    pagarMulta
+    pagarMulta,
+    getResidenteM
 
 }

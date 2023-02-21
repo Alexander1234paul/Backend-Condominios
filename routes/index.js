@@ -99,7 +99,9 @@ const {
     getByMulta,
     createMulta,
     updateMulta,
-    deleteMulta
+    deleteMulta,
+    getResidenteM
+    
 } = require("../controllers/multa");
 
 // Controlador Persona
@@ -271,6 +273,7 @@ router.delete('/dcuota/:dcuo_id', deleteDCuota)
 
 // Multa CRUD
 router.get('/multa', getAllMulta)
+router.get('/resmulta', getResidenteM)
 router.get('/multa/:mul_id', getByMulta)
 router.post('/multa', createMulta)
 router.put("/multa/:mul_id", updateMulta)
