@@ -2,7 +2,7 @@ const { Router } = require('express')
 const router = Router()
 const { createAlquiler, getAllAlquiler, getAlquilerById, updateAlquiler, deleteAlquiler,
     getPagoAlicuota, getPagoReservaciones, getDetalleAlicuotaByID, getResServicio, getSumaResServicio, createAlquilerUsuarios,
-    createVerificarAlquilerUsuarios, getAllAlquileru
+    createVerificarAlquilerUsuarios, getAllAlquileru,getTotalMulta,getDetByIdMulta,getRolUser, createVerificarAlquiler
 } = require('../controllers/alquiler')
 
 
@@ -27,6 +27,14 @@ router.get('/reserviciosS', getSumaResServicio)
 router.post('/alquileru', createAlquilerUsuarios)
 router.post('/alquilerv', createVerificarAlquilerUsuarios)
 router.get('/alquileresu/:token', getAllAlquileru)
+
+/// MULTAS
+
+// Nuevas
+router.get('/totalmulta/:token', getTotalMulta)
+router.get('/detmulta/:token', getDetByIdMulta)
+router.get('/getUser/:token', getRolUser)
+router.post('/alqv', createVerificarAlquiler)
 
 
 module.exports = router

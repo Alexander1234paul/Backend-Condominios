@@ -2,15 +2,150 @@ const { response } = require("express")
 const { db } = require("../Conexiones/slq")
 const { decodeSign } = require("../Helpers/generateToken");
 
-const createAlquiler = (request, response) => {
-    const { alq_fecha, alq_hora_inicio, res_id, bien_id, alq_hora_fin, alq_total } = request.body
+const createVerificarAlquiler = async (request, response) => {
+    const { alq_hora_inicio, res_id, bien_id, alq_hora_fin, alq_total } = request.body
 
-    db.query(`INSERT INTO res_alquiler (alq_fecha,alq_hora_inicio,res_id,bien_id,alq_hora_fin,alq_total) 
-    VALUES ($1,$2,$3,$4,$5,$6)`, [alq_fecha, alq_hora_inicio, res_id, bien_id, alq_hora_fin, alq_total], (error, results) => {
+
+    const horaInicio = new Date();
+    horaInicio.setHours(parseInt(alq_hora_inicio.substr(0, 2)), parseInt(alq_hora_inicio.substr(3, 2)));
+    const horaFin = new Date();
+    horaFin.setHours(parseInt(alq_hora_fin.substr(0, 2)), parseInt(alq_hora_fin.substr(3, 2)));
+    const duracionEnMilisegundos = horaFin.getTime() - horaInicio.getTime();
+    const duracionEnHoras = Math.round(duracionEnMilisegundos / (1000 * 60 * 60));
+
+
+
+
+    db.query(`select * from cont_detalle_pago where dpag_estado=false and ali_id=1 and res_id=$1`
+        , [res_id], async (error, resultspago) => {
+
+            if (error) {
+                response.send(`{"status":"Error", "respa":"${error}"}`)
+            } else {
+                if (resultspago.rows == "") {
+                    const resultAlquilerD = await db.query(`select * from gest_adm_bien where bien_id=$1`, [bien_id])
+                    const resux = duracionEnHoras * resultAlquilerD.rows[0].bien_costo
+                    response.send(`{"status":"Ok", "resp":"Su total es de: $${resux}, ¿desea continuar?"}`)
+
+                } else {
+
+                    response.send(`{"status":"Error", "resp":"Tiene un saldo pendiente de: $${resultspago.rows[0].total}, acerquese a cancelar. "}`)
+                }
+
+            }
+        })
+
+
+}
+const createAlquiler = async (request, response) => {
+    const { alq_fecha, alq_hora_inicio, res_id, bien_id, alq_hora_fin } = request.body
+
+
+    const horaInicio = new Date();
+    horaInicio.setHours(parseInt(alq_hora_inicio.substr(0, 2)), parseInt(alq_hora_inicio.substr(3, 2)));
+    const horaFin = new Date();
+    horaFin.setHours(parseInt(alq_hora_fin.substr(0, 2)), parseInt(alq_hora_fin.substr(3, 2)));
+    const duracionEnMilisegundos = horaFin.getTime() - horaInicio.getTime();
+    const duracionEnHoras = Math.round(duracionEnMilisegundos / (1000 * 60 * 60));
+
+
+    const resultAlquilerD = await db.query(`select * from gest_adm_bien where bien_id=$1`, [bien_id])
+    const resux = duracionEnHoras * resultAlquilerD.rows[0].bien_costo
+
+
+
+    db.query(`select * from res_alquiler where alq_fecha=$1 and bien_id=$2`, [alq_fecha, bien_id], async (error, resultsAlquiler) => {
         if (error) {
             response.send(`{"status":"Error", "resp":"${error}"}`)
+        } else {
+
+            if (resultsAlquiler.rows == "") {
+
+                const resux = duracionEnHoras * resultAlquilerD.rows[0].bien_costo
+                db.query(`INSERT INTO res_alquiler (alq_fecha,alq_hora_inicio,res_id,bien_id,alq_hora_fin,alq_total) VALUES ($1,$2,$3,$4,$5,$6)`
+                    , [alq_fecha, alq_hora_inicio, res_id, bien_id, alq_hora_fin, resux], async (error, results) => {
+                        if (error) {
+
+                        } else {
+                            const resultAlquilerD = await db.query(`select * from gest_adm_bien where bien_id=$1`, [bien_id])
+                            const resux = duracionEnHoras * resultAlquilerD.rows[0].bien_costo
+                            db.query(`INSERT INTO cont_detalle_pago(
+                                         dpag_fecha, res_id, dpag_estado, ali_id, total)
+                                        VALUES ($1, $2, $3, $4, $5)`
+                                , [alq_fecha, res_id, false, 1, resux], async (error, results) => {
+                                    if (error) {
+                                        response.send(`{"status":"Error", "resp":"${error}"}`)
+                                    } else {
+                                        response.send(`{"status":"OK", "resp":"Reservación registrado exitosamente"}`)
+                                    }
+                                })
+
+                        }
+
+                    })
+
+
+            } else {
+                console.log(resultsAlquiler.rows)
+                for (let i = 0; i < resultsAlquiler.rowCount; i++) {
+                    // console.log(i)
+                    const resultsHora = await db.query(`SELECT COUNT(*) AS num_reservas
+                    FROM res_alquiler
+                    WHERE (
+                        CAST($1 AS TIME) BETWEEN alq_hora_inicio AND alq_hora_fin
+                        OR CAST($2 AS TIME) BETWEEN alq_hora_inicio AND alq_hora_fin
+                        OR alq_hora_inicio BETWEEN CAST($1 AS TIME) AND CAST($2 AS TIME)
+                        OR alq_hora_fin BETWEEN CAST($1 AS TIME) AND CAST($2 AS TIME)
+                    )
+                    AND NOT (
+                        alq_hora_inicio >= CAST($2 AS TIME) OR alq_hora_fin <= CAST($1 AS TIME)
+                        
+                        
+                    
+                    
+    )`, [alq_hora_inicio, alq_hora_fin])
+
+                    if (resultsHora.rows[0].num_reservas > 0) {
+
+                        response.send(`{"status":"Error", "resp":"Ya se encuentra reservado."}`)
+                        break
+                    } else {
+
+                        const resux = duracionEnHoras * resultAlquilerD.rows[0].bien_costo
+                        db.query(`INSERT INTO res_alquiler (alq_fecha,alq_hora_inicio,res_id,bien_id,alq_hora_fin,alq_total) VALUES ($1,$2,$3,$4,$5,$6)`
+                            , [alq_fecha, alq_hora_inicio,res_id, bien_id, alq_hora_fin, resux], async (error, results) => {
+                                if (error) {
+
+                                } else {
+                                    const resultAlquilerD = await db.query(`select * from gest_adm_bien where bien_id=$1`, [bien_id])
+                                    const resux = duracionEnHoras * resultAlquilerD.rows[0].bien_costo
+                                    db.query(`INSERT INTO cont_detalle_pago(
+                                                 dpag_fecha, res_id, dpag_estado, ali_id, total)
+                                                VALUES ($1, $2, $3, $4, $5)`
+                                        , [alq_fecha, res_id, false, 1, resux], async (error, results) => {
+                                            if (error) {
+                                                response.send(`{"status":"Error", "resp":"${error}"}`)
+                                            } else {
+                                                response.send(`{"status":"OK", "resp":"Reservación registrado exitosamente"}`)
+                                            }
+                                        })
+
+                                }
+
+                            })
+
+
+
+                    }
+                    break
+                }
+
+            }
+
+
         }
-        response.send(`{"status":"OK", "resp":"Alquiler registrado exitosamente"}`)
+
+        //   
     })
 }
 
@@ -68,20 +203,26 @@ const deleteAlquiler = (request, res) => {
 
 //GET PAGO DE ALICUOTA
 const getPagoAlicuota = async (request, response) => {
+
     const token = request.params.token;
+
     const per_id = await decodeSign(token, null)
+    console.log(per_id)
     db.query("SELECT * FROM gest_adm_alicuota ORDER BY ali_id DESC LIMIT 1", (error, resA) => {
         if (error) {
             response.send(`{"status":"Error", "resp":"${error}"}`)
         } else {
+
             db.query("select res_id from seg_sis_residente where per_id=$1", [per_id._id], (error, resP) => {
                 if (error) {
                     response.send(`{"status":"Error", "resp":"${error}"}`)
                 } else {
+
                     db.query("Select * from cont_detalle_pago where res_id=$1 and ali_id=$2", [resP.rows[0].res_id, resA.rows[0].ali_id], (error, results) => {
                         if (error) {
                             response.send(`{"status":"Error", "resp":"${error}"}`)
                         } else {
+
                             response.status(200).json(results.rows[0])
                         }
 
@@ -157,7 +298,7 @@ const getSumaResServicio = (request, response) => {
 }
 
 const createVerificarAlquilerUsuarios = async (request, response) => {
-    const { alq_fecha, alq_hora_inicio, token, bien_id, alq_hora_fin, alq_total } = request.body
+    const { alq_hora_inicio, token, bien_id, alq_hora_fin, alq_total } = request.body
 
 
     const horaInicio = new Date();
@@ -185,7 +326,7 @@ const createVerificarAlquilerUsuarios = async (request, response) => {
                             response.send(`{"status":"Ok", "resp":"Su total es de: $${resux}, ¿desea continuar?"}`)
 
                         } else {
-                           
+
                             response.send(`{"status":"Error", "resp":"Tiene un saldo pendiente de: $${resultspago.rows[0].total}, acerquese a cancelar. "}`)
                         }
 
@@ -342,20 +483,79 @@ const getAllAlquileru = async (request, response) => {
     })
 
 }
-////ALQUILERES
+
+
+////MULTAS
+
+const getTotalMulta = async (request, response) => {
+
+    const token = request.params.token;
+    const per_id = await decodeSign(token, null)
+    db.query("select res_id from seg_sis_residente where per_id=$1", [per_id._id], (error, resP) => {
+        if (error) {
+
+        } else {
+            db.query("SELECT sum(mul_total) as total FROM cont_multa where res_id=$1 and mul_estado=false", [resP.rows[0].res_id], (error, results) => {
+                if (error) {
+                    response.send(`{"status":"Error", "resp":"${error}"}`)
+                } else {
+                    response.status(200).json(results.rows[0])
+                }
+
+            })
+        }
+    })
+}
+
+
+const getDetByIdMulta = async (request, response) => {
+
+    const token = request.params.token;
+
+    const per_id = await decodeSign(token, null)
+
+    db.query("select res_id from seg_sis_residente where per_id=$1", [per_id._id], (error, resP) => {
+        if (error) {
+            response.send(`{"status":"Error", "resp":"${error}"}`)
+            console.log("em")
+        } else {
+            db.query("SELECT * FROM cont_multa where res_id=$1  and mul_estado=false", [resP.rows[0].res_id], (error, results) => {
+                if (error) {
+                    response.send(`{"status":"Error", "resp":"${error}"}`)
+                } else {
+                    console.log(results.rows)
+                    response.status(200).json(results.rows)
+                }
+
+            })
+        }
+    })
+}
+
+const getRolUser = async (request, response) => {
+    const token = request.params.token;
+    const per_id = await decodeSign(token, null)
+    console.log(per_id.role)
+    response.send(`{"status":"OK", "resp":"${per_id.role}"}`)
+
+}
 module.exports = {
     createAlquiler,
+    getTotalMulta,
     getAllAlquiler,
     getAlquilerById,
     updateAlquiler,
     deleteAlquiler,
     getPagoAlicuota,
+    getDetByIdMulta,
     getPagoReservaciones,
     getDetalleAlicuotaByID,
     getResServicio,
     getSumaResServicio,
     createAlquilerUsuarios,
     createVerificarAlquilerUsuarios,
-    getAllAlquileru
+    getAllAlquileru,
+    getRolUser,
+    createVerificarAlquiler
 
 }

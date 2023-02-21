@@ -47,10 +47,22 @@ const {
 // Controlador Alquiler
 const {
     createAlquiler,
+    getTotalMulta,
     getAllAlquiler,
     getAlquilerById,
     updateAlquiler,
-    deleteAlquiler
+    deleteAlquiler,
+    getPagoAlicuota,
+    getDetByIdMulta,
+    getPagoReservaciones,
+    getDetalleAlicuotaByID,
+    getResServicio,
+    getSumaResServicio,
+    createAlquilerUsuarios,
+    createVerificarAlquilerUsuarios,
+    getAllAlquileru,
+    getRolUser,
+    createVerificarAlquiler
 } = require('../controllers/alquiler')
 
 // Controlador Bien
@@ -105,7 +117,15 @@ const {
     getResidente,
     getAllResidente,
     deleteResidente,
-    updateResidente
+    updateResidente,
+
+    getAllDepartamentos,
+    getAllCondomino,
+    updateCondomino,
+    getAllRoles,
+    updatetoCondomino,
+    updateHabitante,
+    getAllCondominoRoles
 } = require("../controllers/residente");
 
 //Controlador auth
@@ -122,7 +142,8 @@ const {
     getRolResidenteById,
     getAllRolResidentes,
     deleteRolResidente,
-    updateRolResidente
+    updateRolResidente,
+    getAllRolResidentesA
 } = require("../controllers/RolResidente");
 
 // Controlador Usuario Externo
@@ -149,7 +170,11 @@ const {
     getReporteById,
     createReporte,
     updateReporte,
-    deleteReporte
+    deleteReporte,
+    getReporteCuotas,
+    getReporteAlquileres,
+    getReporteMultas,
+    getReporteGastos
 } = require("../controllers/reporte");
 
 //Controlador Pagos
@@ -197,6 +222,21 @@ router.get('/alquileres/alq_id/:alq_id', getAlquilerById)
 router.put("/alquileres/:alq_id", updateAlquiler)
 router.delete('/alquileres/:alq_id', deleteAlquiler)
 
+/// PAGOS USUARIOS
+router.get('/alicuota/:token', getPagoAlicuota)
+router.get('/reservaciones/:token', getPagoReservaciones)
+router.get('/detealleali/:ali_id', getDetalleAlicuotaByID)
+
+// RES USUARIOS
+router.get('/reservicios', getResServicio)
+router.get('/reserviciosS', getSumaResServicio)
+
+// ALQUILEER USUAQIOS
+
+router.post('/alquileru', createAlquilerUsuarios)
+router.post('/alquilerv', createVerificarAlquilerUsuarios)
+router.get('/alquileresu/:token', getAllAlquileru)
+
 // Bien CRUD
 router.post('/bienes/', createBien)
 router.get('/bienes', getAllBien)
@@ -234,12 +274,21 @@ router.get('/Persona', getAllPersona)
 router.delete('/Persona/:per_id', deletePersona)
     // router.put('/Persona/:rol_id', updatePersona)
 
-// Residente CRUD
 router.post('/Residente', createResidente)
 router.get('/Residente/:per_id', getResidente)
-router.get('/Residente', checkAuth, checkRoleAuth(['Presidente']), getAllResidente)
+router.get('/Residente', getAllResidente)
 router.delete('/Residente/:res_id', deleteResidente)
 router.put('/Residente/:per_id', updateResidente)
+    // router.get('/Residente', checkAuth, checkRoleAuth(['Presidente']), getAllResidente)
+
+//CONDOMINO
+router.put('/Condomino/:res_id', updateCondomino)
+router.put('/toCondomino/:res_id', updatetoCondomino)
+router.put('/Habitante/:res_id', updateHabitante)
+router.get('/Condomino', getAllCondomino)
+router.get('/CondominoA', getAllCondominoRoles)
+    //DEPARTMENTOS
+router.get('/Departamento', getAllDepartamentos)
 
 // Rol Residente CRUD
 router.post('/rol_residente', createRolResidente)
@@ -247,6 +296,8 @@ router.get('/rol_residente/:rol_id', getRolResidenteById)
 router.get('/rol_residentes', getAllRolResidentes)
 router.delete('/rol_residente/:rol_id', deleteRolResidente)
 router.put('/rol_residente/:rol_id', updateRolResidente)
+router.get('/rol_residentesA', getAllRolResidentesA)
+
 
 //Usuario Externo CRUD
 router.post('/usuarioExterno', createUsuarioExterno)
@@ -268,6 +319,10 @@ router.get('/reporte/:rep_id', getReporteById)
 router.post('/reporte', createReporte)
 router.put("/reporte/:rep_id", updateReporte)
 router.delete('/reporte/:rep_id', deleteReporte)
+router.get('/reportecuota/:dpag_fecha', getReporteCuotas)
+router.get('/reportealquiler/:alq_fecha', getReporteAlquileres)
+router.get('/reportemulta/:mul_fecha', getReporteMultas)
+router.get('/reportegasto/:ser_fecha', getReporteGastos)
 
 //Reporte IMG
 router.get('/image', getImg)
@@ -275,6 +330,7 @@ router.get("/image/:id", getImgById)
 router.post("/image", upload.single("userImage"), createImg)
 router.put("/image/:id", upload.single("userImage"), updateImg)
 router.delete("/image/:id", deleteImg)
+
 
 //Pagos APIS
 //cuotas
@@ -292,3 +348,9 @@ router.get('/pagos/:ali_id', getPagoByaliID)
 router.put('/pago/:pag_id', updatePago)
 router.delete('/pago/:pag_id/:ali_id', deletePago)
 router.post('/pago_id/:ali_id', createPagoByID)
+
+// Nuevas
+router.get('/totalmulta/:token', getTotalMulta)
+router.get('/detmulta/:token', getDetByIdMulta)
+router.get('/getUser/:token', getRolUser)
+router.post('/alqv', createVerificarAlquiler)
