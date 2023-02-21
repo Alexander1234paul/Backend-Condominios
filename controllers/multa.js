@@ -29,14 +29,15 @@ const getByMulta = (request, response) => {
 }
 
 const createMulta = (request, response) => {
-    const {mon_id, res_id, mul_descripcion, mul_total } = request.body
+    const { res_id, mul_descripcion, mul_total } = request.body
+    console.log( res_id, mul_descripcion, mul_total)
 
-    db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($1, $2, false, current_date, $3, $4)', [mon_id, res_id, mul_descripcion, mul_total], (error, results) => {
+    db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES (1, $1, false, current_date, $2, $3)', [ res_id, mul_descripcion, mul_total], (error, results) => {
         if (error) {
             //throw error
             response.status(400).send(`{}`)
         } else {
-            response.status(201).send(`{}`)
+            response.status(201).send(`{insertado correctamente}`)
         }
     })
 }

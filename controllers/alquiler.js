@@ -488,13 +488,15 @@ const getAllAlquileru = async (request, response) => {
 ////MULTAS
 
 const getTotalMulta = async (request, response) => {
-
+console.log("haciedno")
     const token = request.params.token;
     const per_id = await decodeSign(token, null)
+    console.log(per_id)
     db.query("select res_id from seg_sis_residente where per_id=$1", [per_id._id], (error, resP) => {
         if (error) {
-
+            response.send(`{"status":"Error", "resp":"${error}"}`)
         } else {
+            console.log(resP.rows[0])
             db.query("SELECT sum(mul_total) as total FROM cont_multa where res_id=$1 and mul_estado=false", [resP.rows[0].res_id], (error, results) => {
                 if (error) {
                     response.send(`{"status":"Error", "resp":"${error}"}`)

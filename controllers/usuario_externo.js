@@ -49,9 +49,11 @@ const getUsuarioExterno = (request, response) => {
     const per_id = request.params.per_id;
     db.query('select p.per_id, p.per_nombres,p.per_apellidos,ue.use_fecha, ue.use_descripcion from seg_cond_usuario_externo ue inner join seg_sis_persona p on p.per_id=ue.per_id WHERE p.per_id = $1', [per_id], (error, results) => {
         if (error) {
-            throw error
+            response.status(400).send(`{}`)
+        } else {
+            response.status(200).json(results.rows[0])
         }
-        response.status(200).json(results.rows)
+
     })
 
 }
@@ -59,9 +61,13 @@ const getUsuarioExterno = (request, response) => {
 
 const getAllUsuarioExterno = (request, response) => {
     db.query('select ue.use_id, p.per_id, p.per_nombres,p.per_apellidos,ue.use_fecha, ue.use_descripcion from seg_cond_usuario_externo ue inner join seg_sis_persona p on p.per_id=ue.per_id', (error, results) => {
-        if (error)
-            throw error
-        response.status(200).json(results.rows)
+        if (error) {
+            response.status(400).send(`{}`)
+        } else {
+            response.status(200).json(results.rows)
+        }
+
+
     })
 }
 
@@ -71,9 +77,12 @@ const deleteUsuarioExterno = (request, response) => {
     const use_id = request.params.use_id;
 
     db.query('delete from seg_cond_usuario_externo where use_id=$1', [use_id], (error, results) => {
-        if (error)
-            throw error
-        response.status(200).send(`deleted id is ${use_id}`)
+        if (error) {
+            // throw error
+            response.status(400).send(`{}`)
+        } else {
+            response.status(201).send(`{}`)
+        }
     })
 }
 
@@ -82,6 +91,7 @@ const updateUsuarioExterno = (request, response) => {
     const per_id = request.params.per_id;
     const { per_nombres, per_apellidos, use_fecha, use_descripcion } = request.body
     // console.log('id is ' + rol_id)
+    console.log( per_nombres, per_apellidos, use_fecha, use_descripcion)
 
     db.query('update seg_sis_persona set per_nombres=$1, per_apellidos=$2 where per_id=$3', [per_nombres, per_apellidos, per_id], (error, results) => {
         if (error) {
