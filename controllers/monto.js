@@ -27,9 +27,9 @@ const getByMonto = (request, response) => {
 }
 
 const createMonto = (request, response) => {
-    const { mon_precio, mon_fecha } = request.body
+    const { mon_precio } = request.body
 
-    db.query(`INSERT INTO gest_adm_monto (mon_precio, mon_fecha) VALUES ($1, $2)`, [mon_precio, mon_fecha], (error, results) => {
+    db.query(`INSERT INTO gest_adm_monto (mon_precio, mon_fecha) VALUES ($1, current_date)`, [mon_precio], (error, results) => {
         if (error) {
             //throw error
             response.status(400).send(`{}`)
