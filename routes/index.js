@@ -166,7 +166,11 @@ const {
     getReporteById,
     createReporte,
     updateReporte,
-    deleteReporte
+    deleteReporte,
+    getReporteCuotas,
+    getReporteAlquileres,
+    getReporteMultas,
+    getReporteGastos
 } = require("../controllers/reporte");
 
 //Controlador Pagos
@@ -311,6 +315,10 @@ router.get('/reporte/:rep_id', getReporteById)
 router.post('/reporte', createReporte)
 router.put("/reporte/:rep_id", updateReporte)
 router.delete('/reporte/:rep_id', deleteReporte)
+router.get('/reportecuota/:dpag_fecha', getReporteCuotas)
+router.get('/reportealquiler/:alq_fecha', getReporteAlquileres)
+router.get('/reportemulta/:mul_fecha', getReporteMultas)
+router.get('/reportegasto/:ser_fecha', getReporteGastos)
 
 //Reporte IMG
 router.get('/image', getImg)
