@@ -41,10 +41,10 @@ const createMonto = (request, response) => {
 
 const updateMonto = (request, response) => {
     const mon_id = request.params.mon_id;
-    const { mon_precio, mon_fecha } = request.body
+    const { mon_precio } = request.body
     console.log('id' + mon_id)
 
-    db.query(`update gest_adm_monto set  mon_precio=$1, mon_fecha=$2 where mon_id=$3`, [mon_precio, mon_fecha, mon_id], (error, results) => {
+    db.query(`update gest_adm_monto set  mon_precio=$1 where mon_id=$2`, [mon_precio, mon_id], (error, results) => {
         if (error) {
             //throw error
             response.status(400).send(`{}`)
