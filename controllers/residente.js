@@ -2,10 +2,10 @@ const { response } = require("express")
 const { db } = require("../Conexiones/slq")
 const { encrypt } = require("../Helpers/handleBcrypt")
 
-const createResidente = async (request, response) => {
+const createResidente = async(request, response) => {
 
     const { per_id, per_nombres, per_apellidos, res_correo, res_telefono, res_usuario, res_clave, accion, departamento_id } = request.body
-    // console.log(per_id, per_nombres, per_apellidos, res_correo, res_telefono, res_usuario, res_clave, accion, departamento_id)
+        // console.log(per_id, per_nombres, per_apellidos, res_correo, res_telefono, res_usuario, res_clave, accion, departamento_id)
 
     const password = await encrypt(res_clave);
 
@@ -278,17 +278,15 @@ const getResidente = (request, response) => {
 
 }
 const getAllResidente = (request, response) => {
-    db.query('select p.per_id, p.per_nombres,p.per_apellidos, rr.rol_descripcion, r.res_correo, r.res_telefono from seg_sis_residente r inner join seg_sis_persona  p on p.per_id=r.per_id inner join seg_sis_rol_residente rr on r.rol_id=rr.rol_id where r.rol_id=5', (error, results) => {
+    db.query('SELECT r.res_id, p.per_id, p.per_nombres, p.per_apellidos, rr.rol_descripcion, r.res_correo, r.res_telefono FROM seg_sis_residente r INNER JOIN seg_sis_persona p ON p.per_id = r.per_id INNER JOIN seg_sis_rol_residente rr ON r.rol_id = rr.rol_id WHERE r.rol_id = 5', (error, results) => {
         if (error) {
             response.send(`{"status":"Error", "resp":${error}}`)
         } else {
             response.status(200).json(results.rows)
         }
-
-
     })
-
 }
+
 const getAllCondomino = (request, response) => {
     db.query('select p.per_id, p.per_nombres,p.per_apellidos, rr.rol_descripcion, r.res_correo, r.res_telefono, r.res_id from seg_sis_residente r inner join seg_sis_persona  p on p.per_id=r.per_id inner join seg_sis_rol_residente rr on r.rol_id=rr.rol_id where r.rol_id=6', (error, results) => {
         if (error) {
@@ -349,7 +347,7 @@ const updateHabitante = (request, response) => {
 
     const res_id = request.params.res_id;
 
-    db.query('UPDATE seg_sis_residente SET rol_id=5 WHERE res_id=$1', [ res_id], (error, results) => {
+    db.query('UPDATE seg_sis_residente SET rol_id=5 WHERE res_id=$1', [res_id], (error, results) => {
 
         if (error) {
             response.send(`{"status":"Error", "resp":${error}}`)
@@ -364,7 +362,7 @@ const updatetoCondomino = (request, response) => {
 
     const res_id = request.params.res_id;
 
-    db.query('UPDATE seg_sis_residente SET rol_id=6 WHERE res_id=$1', [ res_id], (error, results) => {
+    db.query('UPDATE seg_sis_residente SET rol_id=6 WHERE res_id=$1', [res_id], (error, results) => {
 
         if (error) {
             response.send(`{"status":"Error", "resp":${error}}`)
@@ -380,7 +378,7 @@ const updatetoCondomino = (request, response) => {
 const updateResidente = (request, response) => {
     const per_id = request.params.per_id;
     const { per_nombres, per_apellidos, res_correo, res_telefono, departamento_id, res_id } = request.body
-    // console.log(per_nombres, per_apellidos, res_correo, res_telefono, departamento_id)
+        // console.log(per_nombres, per_apellidos, res_correo, res_telefono, departamento_id)
     db.query('update seg_sis_persona set per_nombres=$1, per_apellidos=$2 where per_id=$3', [per_nombres, per_apellidos, per_id], (error, results) => {
         if (error) {
             response.send(`{"status":"Error", "resp":${error}}`)
@@ -407,7 +405,7 @@ const getAllDepartamentos = (request, response) => {
 
         if (error) {
             response.status(400).send(`{Error}`)
-            // console.log(error)
+                // console.log(error)
         } else {
             // console.log(results)
             response.status(200).json(results.rows)
@@ -425,7 +423,7 @@ const getAllRoles = (request, response) => {
 
         if (error) {
             response.send(`{"status":"Error", "resp":${error}}`)
-            // console.log(error)
+                // console.log(error)
         } else {
             // console.log(results)
             response.status(200).json(results.rows)
