@@ -1,11 +1,11 @@
 // const pgPromise = require('pg-promise')
 const { Pool } = require('pg');
 const pool = new Pool({
-    host: 'containers-us-west-106.railway.app',
-    port: '7745',
+    host: 'containers-us-west-62.railway.app',
+    port: '7520',
     database: 'railway',
     user: 'postgres',
-    password: '9oIfwpQVwiq0Eaw3d3IW',
+    password: 'vHuI5ZaBvc6OzMj38dzG',
     ssl: {
         rejectUnauthorized: false,
     }
