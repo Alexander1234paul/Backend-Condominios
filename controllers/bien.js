@@ -1,9 +1,9 @@
 const { response } = require("express")
 const { db } = require("../Conexiones/slq")
 
-const createBien = (request, response) => {
+const createBien =async (request, response) => {
     const { bien_descripcion, bien_costo } = request.body
-    console.log("nasjndj")
+    //console.log("nasjndj")
     db.query(`INSERT INTO gest_adm_bien (bien_descripcion,bien_costo) 
     VALUES ($1,$2)`, [bien_descripcion, bien_costo], (error, results) => {
         if (error) {
@@ -16,16 +16,14 @@ const createBien = (request, response) => {
     })
 }
 
-const getAllBien = async (request, response) => {
+const getAllBien = (request, response) => {
 
-    await db.query('SELECT * FROM gest_adm_bien', (error, results) => {
+    db.query('SELECT * FROM gest_adm_bien', (error, results) => {
         if (error) {
             response.status(201).send(`Bien added with:`)
         } else {
             response.status(200).json(results.rows)
         }
-        
-
     })
 }
 
@@ -60,7 +58,7 @@ const updateBien = (request, response) => {
 const deleteBien = (request, response) => {
 
     const bien_id = request.params.bien_id;
-    console.log('id is ' + bien_id)
+    //console.log('id is ' + bien_id)
     db.query('DELETE from gest_adm_bien WHERE bien_id=$1', [bien_id], (error, results) => {
         if (error) {
             // throw error

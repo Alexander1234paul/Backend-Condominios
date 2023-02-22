@@ -51,7 +51,7 @@ const getUsuarioExterno = (request, response) => {
         if (error) {
             response.status(400).send(`{}`)
         } else {
-            response.status(200).json(results.rows[0])
+            response.status(200).json(results.rows)
         }
 
     })
