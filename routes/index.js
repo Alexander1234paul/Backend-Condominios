@@ -278,7 +278,7 @@ router.get('/vmulta', verificarMulta)
 router.get('/resmulta', getResidenteM)
 router.get('/multa/:mul_id', getByMulta)
 router.post('/multa', createMulta)
-router.put("/multa/:mul_id", updateMulta)
+router.get("/multae/:mul_id", updateMulta)
 router.delete('/multa/:mul_id', deleteMulta)
 
 // Persona CRUD

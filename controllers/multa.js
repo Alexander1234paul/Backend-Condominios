@@ -56,16 +56,13 @@ const createMulta = (request, response) => {
 }
 
 const updateMulta = (request, response) => {
-    const mul_id = request.params.mul_id;
-    const { mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total } = request.body
-    console.log('id' + mul_id)
 
-    db.query('update cont_multa set mon_id=$2, res_id=$3, mul_estado=$4, mul_fecha=$5, mul_descripcion=$6, mul_total=$7 where mul_id=$1', [mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total, mul_id], (error, results) => {
+    const mul_id = request.params.mul_id;
+    db.query('update cont_multa set  mul_estado=$2 where mul_id=$1', [mul_id, true], (error, results) => {
         if (error) {
-            //throw error
-            response.status(400).send(`{}`)
+            response.send(`{"status":"Error", "resp":"${error}"}`)
         } else {
-            response.status(201).send(`{}`)
+            response.send(`{"status":"OK", "resp":"Pago registrado exitosamente"}`)
         }
     })
 }
@@ -111,25 +108,25 @@ const verificarMulta = (request, response) => {
         } else {
             // console.log(results.rows[0].dia_pago)
             if (diaActual + 1 == results.rows[0].dia_pago + 1) {
-            db.query("SELECT dp.*, EXTRACT(YEAR FROM age(now(), dp.dpag_fecha)) * 12 +  EXTRACT(MONTH FROM age(now(), dp.dpag_fecha)) AS meses_retraso FROM public.cont_detalle_pago dp WHERE dp.dpag_fecha < now() - interval '1 month' and ali_id!=1 and dpag_estado=false ORDER BY dp.dpag_fecha DESC", async (error, results) => {
-                if (error) {
-                    response.send(`{"status":"Error", "resp":"${error}"}`)
-                } else {
-                    if (results.rows == "") {
-                        response.send(`{"status":"OK", "resp":"Multa eliminada exitosamente"}`)
-
+                db.query("SELECT dp.*, EXTRACT(YEAR FROM age(now(), dp.dpag_fecha)) * 12 +  EXTRACT(MONTH FROM age(now(), dp.dpag_fecha)) AS meses_retraso FROM public.cont_detalle_pago dp WHERE dp.dpag_fecha < now() - interval '1 month' and ali_id!=1 and dpag_estado=false ORDER BY dp.dpag_fecha DESC", async (error, results) => {
+                    if (error) {
+                        response.send(`{"status":"Error", "resp":"${error}"}`)
                     } else {
-                        const resultMontoD = await db.query(`SELECT * FROM gest_adm_monto ORDER BY mon_id DESC LIMIT 1;`)
-                        for (var i = 0; i < results.rowCount; i++) {
-                            if (results.rows[i].meses_retraso > 1) {
-                                await db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($4, $1, false, current_date, $2, $3)', [results.rows[i].res_id, 'Multa por atraso de alicuota', resultMontoD.rows[0].mon_precio, resultMontoD.rows[0].mon_id])
-                            }
-                        }
-                        response.send(`{"status":"OK", "resp":"Ok"}`)
-                    }
-                }
+                        if (results.rows == "") {
+                            response.send(`{"status":"OK", "resp":"Multa eliminada exitosamente"}`)
 
-            })
+                        } else {
+                            const resultMontoD = await db.query(`SELECT * FROM gest_adm_monto ORDER BY mon_id DESC LIMIT 1;`)
+                            for (var i = 0; i < results.rowCount; i++) {
+                                if (results.rows[i].meses_retraso > 1) {
+                                    await db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($4, $1, false, current_date, $2, $3)', [results.rows[i].res_id, 'Multa por atraso de alicuota', resultMontoD.rows[0].mon_precio, resultMontoD.rows[0].mon_id])
+                                }
+                            }
+                            response.send(`{"status":"OK", "resp":"Ok"}`)
+                        }
+                    }
+
+                })
             } else {
                 response.send(`{"status":"OK", "resp":"OK"}`)
             }
