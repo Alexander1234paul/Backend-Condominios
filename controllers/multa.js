@@ -106,30 +106,34 @@ const verificarMulta = (request, response) => {
 
             response.send(`{"status":"Error", "resp":"${error}"}`)
         } else {
-            // console.log(results.rows[0].dia_pago)
-            if (diaActual == results.rows[0].dia_pago) {
-                db.query("SELECT dp.*, EXTRACT(YEAR FROM age(now(), dp.dpag_fecha)) * 12 +  EXTRACT(MONTH FROM age(now(), dp.dpag_fecha)) AS meses_retraso FROM public.cont_detalle_pago dp WHERE dp.dpag_fecha < now() - interval '1 month' and ali_id!=1 and dpag_estado=false ORDER BY dp.dpag_fecha DESC", async (error, results) => {
-                    if (error) {
-                        response.send(`{"status":"Error", "resp":"${error}"}`)
-                    } else {
-                        if (results.rows == "") {
-                            response.send(`{"status":"OK", "resp":"Multa eliminada exitosamente"}`)
-
-                        } else {
-                            const resultMontoD = await db.query(`SELECT * FROM gest_adm_monto ORDER BY mon_id DESC LIMIT 1;`)
-                            for (var i = 0; i < results.rowCount; i++) {
-                                if (results.rows[i].meses_retraso > 1) {
-                                    await db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($4, $1, false, current_date, $2, $3)', [results.rows[i].res_id, 'Multa por atraso de alicuota', resultMontoD.rows[0].mon_precio, resultMontoD.rows[0].mon_id])
-                                }
-                            }
-                            response.send(`{"status":"OK", "resp":"Ok"}`)
-                        }
-                    }
-
-                })
-            } else {
+            if (results.rows[0] == "") {
                 response.send(`{"status":"OK", "resp":"OK"}`)
+            } else {
+                if (diaActual == results.rows[0].dia_pago) {
+                    db.query("SELECT dp.*, EXTRACT(YEAR FROM age(now(), dp.dpag_fecha)) * 12 +  EXTRACT(MONTH FROM age(now(), dp.dpag_fecha)) AS meses_retraso FROM public.cont_detalle_pago dp WHERE dp.dpag_fecha < now() - interval '1 month' and ali_id!=1 and dpag_estado=false ORDER BY dp.dpag_fecha DESC", async (error, results) => {
+                        if (error) {
+                            response.send(`{"status":"Error", "resp":"${error}"}`)
+                        } else {
+                            if (results.rows == "") {
+                                response.send(`{"status":"OK", "resp":"Multa eliminada exitosamente"}`)
+
+                            } else {
+                                const resultMontoD = await db.query(`SELECT * FROM gest_adm_monto ORDER BY mon_id DESC LIMIT 1;`)
+                                for (var i = 0; i < results.rowCount; i++) {
+                                    if (results.rows[i].meses_retraso > 1) {
+                                        await db.query('INSERT INTO cont_multa (mon_id, res_id, mul_estado, mul_fecha, mul_descripcion, mul_total) VALUES ($4, $1, false, current_date, $2, $3)', [results.rows[i].res_id, 'Multa por atraso de alicuota', resultMontoD.rows[0].mon_precio, resultMontoD.rows[0].mon_id])
+                                    }
+                                }
+                                response.send(`{"status":"OK", "resp":"Ok"}`)
+                            }
+                        }
+
+                    })
+                } else {
+                    response.send(`{"status":"OK", "resp":"OK"}`)
+                }
             }
+
 
         }
     })
