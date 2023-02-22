@@ -26,12 +26,17 @@ const createVehiculo = (request, response) => {
 
 const getAllVehiculo = (request, response) => {
 
-    db.query('SELECT v.*, CONCAT (ssp.per_nombres,ssp.per_apellidos) as resi from seg_cond_vehiculo v inner join seg_sis_residente ssr on v.res_id=ssr.res_id inner join seg_sis_persona ssp on ssr.per_id=ssp.per_id', (error, results) => {
+    db.query('SELECT v.*, ssp.per_nombres, ssp.per_apellidos FROM seg_cond_vehiculo v INNER JOIN seg_sis_residente ssr ON v.res_id = ssr.res_id INNER JOIN seg_sis_persona ssp ON ssr.per_id = ssp.per_id', (error, results) => {
         if (error)
             throw error
-        response.status(200).json(results.rows)
-    })
-}
+        const vehiculos = results.rows.map(row => {
+            const { per_nombres, per_apellidos, ...vehiculo } = row;
+            return {...vehiculo, resi: per_nombres + ' ' + per_apellidos };
+        });
+        response.status(200).json(vehiculos);
+    });
+};
+
 
 const getVehiculoById = (request, response) => {
     const veh_placa = request.params.veh_placa;
