@@ -102,7 +102,7 @@ const {
     deleteMulta,
     getResidenteM,
     verificarMulta
-    
+
 } = require("../controllers/multa");
 
 // Controlador Persona
@@ -342,7 +342,7 @@ router.get('/reportegasto/:ser_fecha', getReporteGastos)
 router.get('/image', getImg)
 router.get("/image/:id", getImgById)
 router.post("/image", upload.single("userImage"), createImg)
-router.put("/image/:id", upload.single("userImage"), updateImg)
+router.put("/image/:dser_id", upload.single("userImage"), updateImg)
 router.delete("/image/:id", deleteImg)
 
 
@@ -354,7 +354,7 @@ router.get('/alicuota', getAllAlicuota)
 router.put('/alicuota/:ali_id', updateAlicuota)
 router.delete('/alicuota/:ali_id', deleteAliCuota)
 
-    // detalle pago
+// detalle pago
 router.get('/detalle_pago', getAllDetallePago)
 router.post('/detalle_pago', createDetallePago)
 router.put('/detalle_pago/:dpag_id/:res_correo', updateEstado)
