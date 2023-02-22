@@ -7,16 +7,16 @@ const createVehiculo = (request, response) => {
     db.query('SELECT veh_placa FROM seg_cond_vehiculo WHERE veh_placa = $1', [veh_placa], (error, results) => {
         if (error) {
             console.error(error);
-            response.send(`{"status":"Error", "resp":${error}}`)
+            response.send(`{"status":"Error", "resp":${err}}`)
         } else if (results.rows.length > 0) {
-            response.send(`{"status":"Error", "resp":Placa Ya exitente}`)
+            response.send(`{"status":"Error", "resp":${error}}`)
         } else {
             db.query('INSERT INTO seg_cond_vehiculo (veh_placa, veh_marca, veh_modelo, veh_color, res_id) VALUES ($1, $2, $3, $4, $5)', [veh_placa, veh_marca, veh_modelo, veh_color, res_id], (error, results) => {
                 if (error) {
                     console.error(error);
                     response.send(`{"status":"Error", "resp":${error}}`)
                 } else {
-                    response.send('{"status":"Ok", "resp":"Vehiculo Insertado correcta"}');
+                    response.send(`{"status":"Ok", "resp":"Asignación correcta"}`)
                 }
             });
         }
