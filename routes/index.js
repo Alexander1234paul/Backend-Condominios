@@ -100,7 +100,8 @@ const {
     createMulta,
     updateMulta,
     deleteMulta,
-    getResidenteM
+    getResidenteM,
+    verificarMulta
     
 } = require("../controllers/multa");
 
@@ -273,6 +274,7 @@ router.delete('/dcuota/:dcuo_id', deleteDCuota)
 
 // Multa CRUD
 router.get('/multa', getAllMulta)
+router.get('/vmulta', verificarMulta)
 router.get('/resmulta', getResidenteM)
 router.get('/multa/:mul_id', getByMulta)
 router.post('/multa', createMulta)

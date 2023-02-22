@@ -3,7 +3,7 @@ const { db } = require("../Conexiones/slq")
 
 const getAllMulta = (request, response) => {
 
-    db.query('SELECT concat(pe.per_apellidos, pe.per_nombres) as residente, ml.mul_descripcion, ml.mul_total, ml.mul_fecha, ml.mul_estado  FROM cont_multa ml, gest_adm_monto mo, seg_sis_residente r, seg_sis_persona pe where ml.mon_id = mo.mon_id and ml.mul_estado = false and ml.res_id = r.res_id and r.per_id = pe.per_id order by ml.mul_id', (error, results) => {
+    db.query("SELECT ml.mul_id, concat(pe.per_apellidos ||' ' || pe.per_nombres) as residente, ml.mul_descripcion, ml.mul_total, ml.mul_fecha, ml.mul_estado  FROM cont_multa ml, gest_adm_monto mo, seg_sis_residente r, seg_sis_persona pe where ml.mon_id = mo.mon_id and ml.mul_estado = false and ml.res_id = r.res_id and r.per_id = pe.per_id order by ml.mul_id", (error, results) => {
         if (error) {
             //throw error
             response.status(400).send(`{}`)
@@ -92,9 +92,25 @@ const deleteMulta = (request, response) => {
     db.query('delete from cont_multa where mul_id=$1', [mul_id], (error, results) => {
         if (error) {
             //throw error
-            response.status(400).send(`{}`)
+            response.send(`{"status":"Error", "resp":"${error}"}`)
         } else {
-            response.status(201).send(`{}`)
+            response.send(`{"status":"OK", "resp":"Multa eliminada exitosamente"}`)
+        }
+    })
+}
+
+const verificarMulta = (request, response) => {
+
+    //DIA ACTUAL
+    const fechaActual = new Date();
+    const diaActual = fechaActual.getDate();
+
+    db.query("SELECT  dp.*, DATE_PART('day', dp.dpag_fecha) AS dia_pago FROM public.cont_detalle_pago dp where ali_id!=1 and dpag_estado=false", (error, results) => {
+        if (error) {
+            //throw error
+            response.send(`{"status":"Error", "resp":"${error}"}`)
+        } else {
+            response.send(`{"status":"OK", "resp":"Multa eliminada exitosamente"}`)
         }
     })
 }
@@ -106,6 +122,7 @@ module.exports = {
     updateMulta,
     deleteMulta,
     pagarMulta,
-    getResidenteM
+    getResidenteM,
+    verificarMulta
 
 }
