@@ -107,7 +107,7 @@ const verificarMulta = (request, response) => {
             response.send(`{"status":"Error", "resp":"${error}"}`)
         } else {
             // console.log(results.rows[0].dia_pago)
-            if (diaActual + 1 == results.rows[0].dia_pago + 1) {
+            if (diaActual == results.rows[0].dia_pago) {
                 db.query("SELECT dp.*, EXTRACT(YEAR FROM age(now(), dp.dpag_fecha)) * 12 +  EXTRACT(MONTH FROM age(now(), dp.dpag_fecha)) AS meses_retraso FROM public.cont_detalle_pago dp WHERE dp.dpag_fecha < now() - interval '1 month' and ali_id!=1 and dpag_estado=false ORDER BY dp.dpag_fecha DESC", async (error, results) => {
                     if (error) {
                         response.send(`{"status":"Error", "resp":"${error}"}`)
