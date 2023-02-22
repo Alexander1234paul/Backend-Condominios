@@ -7,16 +7,16 @@ const createVehiculo = (request, response) => {
     db.query('SELECT veh_placa FROM seg_cond_vehiculo WHERE veh_placa = $1', [veh_placa], (error, results) => {
         if (error) {
             console.error(error);
-            response.status(500).send('Error interno del servidor');
+            response.send(`{"status":"Error", "resp":${error}}`)
         } else if (results.rows.length > 0) {
-            response.status(400).send('La placa del vehículo ya existe');
+            response.send(`{"status":"Error", "resp":Placa Ya exitente}`)
         } else {
             db.query('INSERT INTO seg_cond_vehiculo (veh_placa, veh_marca, veh_modelo, veh_color, res_id) VALUES ($1, $2, $3, $4, $5)', [veh_placa, veh_marca, veh_modelo, veh_color, res_id], (error, results) => {
                 if (error) {
                     console.error(error);
-                    response.status(500).send('Error interno del servidor');
+                    response.send(`{"status":"Error", "resp":${error}}`)
                 } else {
-                    response.status(200).send('Vehículo insertado correctamente');
+                    response.send('{"status":"Ok", "resp":"Vehiculo Insertado correcta"}');
                 }
             });
         }
