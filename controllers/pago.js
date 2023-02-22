@@ -95,10 +95,10 @@ const createCuota = async(req, res) => {
             await db.query('INSERT INTO gest_adm_pago (pag_descripcion, pag_costo, ali_id) VALUES ($1, $2, $3)', [pago.pag_descripcion, pago.pag_costo, ali_id]);
         }
 
-        res.status(200).send('Datos insertados correctamente');
+        res.send(`{"status":"Ok", "resp":"Asignación correcta"}`)
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al insertar los datos');
+        res.send(`{"status":"Error", "resp":${error}}`)
     }
 };
 
@@ -197,15 +197,24 @@ const deleteAliCuota = (req, res) => {
             db.query(deleteDetallesQuery, [ali_id], (err, result) => {
                 if (err) {
                     console.error(err);
-                    res.status(500).send('Error al eliminar los detalles de pago relacionados');
+                    res.status(500).json({
+                        message: 'Ocurrió un error al actualizar la alicuota',
+                        error: err.message,
+                    });
                 } else {
                     const deleteAlicuotaQuery = 'DELETE FROM gest_adm_alicuota WHERE ali_id = $1';
                     db.query(deleteAlicuotaQuery, [ali_id], (err, result) => {
                         if (err) {
                             console.error(err);
-                            res.status(500).send('Error al eliminar la alicuota');
+                            res.status(500).json({
+                                message: 'Ocurrió un error al actualizar la alicuota',
+                                error: err.message,
+                            });
                         } else {
-                            res.status(200).send(`Se ha eliminado la alicuota con ID ${ali_id}`);
+                            res.status(200).json({
+                                message: 'Alicuota Eliminada correctamente',
+                                rowsAffected: result.rowCount,
+                            });
                         }
                     });
                 }
