@@ -54,7 +54,7 @@ const createDetallePago = async(req, res) => {
 
 const getAllAlicuota = (request, response) => {
 
-    db.query('select * from gest_adm_alicuota order by ali_id', (error, results) => {
+    db.query('SELECT * FROM gest_adm_alicuota WHERE ali_id != 1 ORDER BY ali_id', (error, results) => {
         if (error)
             throw error
         response.status(200).json(results.rows)
